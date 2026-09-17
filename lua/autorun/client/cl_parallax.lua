@@ -852,26 +852,11 @@ if true then
 							function chosen.model:LayoutEntity(ent)
 								chosen.model:SetFOV(45+(math.sin(RealTime())*3.5))
 
-								-- Not every playermodel has a "pose_standing_01" sequence --
-								-- that alone silently failing was what left the T-pose showing.
-								-- Try a spread of common idle sequence names instead.
-								if not ent.MaxF4IdleSet then
-									local idleSequences = {"idle_unarmed", "idle_all_01", "idle_all", "idle", "walk_all", "walk_unarmed"}
-									local sequence = 0
-
-									for _, name in ipairs(idleSequences) do
-										local seq = ent:LookupSequence(name)
-										if seq and seq >= 0 then
-											sequence = seq
-											break
-										end
-									end
-
-									ent:ResetSequence(sequence)
-									ent.MaxF4IdleSet = true
+								local sequence, duration = ent:LookupSequence("pose_standing_01")
+								if (sequence >= 0) and (duration != 0) then
+									ent:SetSequence(sequence)
+									chosen.model:RunAnimation()
 								end
-
-								chosen.model:RunAnimation()
 							end
 						end
 
