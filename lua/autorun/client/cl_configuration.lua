@@ -13,46 +13,23 @@ F4menu.configuration.general = {
 	time_and_date = false,
 	// Whether or not to display the time in the top left corner of the screen.
 
-	theme = "clear",
-	// The default theme to use.
-	// "clear", "dark", "light"
+	theme = "max",
+	// Only one theme is used -- forced to match the MAX Scoreboard's look
+	// (plain black, no blur). See "max" below to tweak it.
 
 	color = Color(80, 200, 255),
 	// Color used for any other small things that dont have their own palette
 
 	themes = {
-		["clear"] = {
-			blur_background = true,
+		["max"] = {
+			blur_background = false,
 			text = Color(235, 235, 235),
-			background = Color(0, 0, 0, 100),
-			player_background = Color(0, 0, 0, 50),
-			job_background = Color(0, 0, 0, 50),
-			list_background = Color(0, 0, 0, 50),
+			background = Color(0, 0, 0, 210),
+			player_background = Color(0, 0, 0, 60),
+			job_background = Color(0, 0, 0, 60),
+			list_background = Color(0, 0, 0, 60),
 			listing_background = Color(0, 0, 0, 50),
 			listing_header = Color(0, 0, 0, 150),
-		},
-
-		["dark"] = {
-			text = Color(235, 235, 235),
-			background = Color(54, 57, 62),
-			player_background = Color(30, 33, 36),
-			job_background = Color(46, 49, 54),
-			list_background = Color(46, 49, 54),
-			listing_background = Color(0, 0, 0, 0),
-			listing_header = Color(0, 0, 0, 150),
-		},
-
-		["light"] = {
-			light = true,
-			text = Color(30, 30, 30),
-			background = Color(255, 255, 255),
-			player_background = Color(223, 223, 223),
-			job_background = Color(243, 243, 243),
-			job_header = Color(90, 90, 90),
-			list_background = Color(46, 49, 54),
-			listing_background = Color(223, 223, 223, 0),
-			listing_header = Color(233, 233, 233),
-			listing_items = Color(243, 243, 243),
 		},
 
 		/* // Theme Template! (multiline-comment)

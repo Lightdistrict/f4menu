@@ -290,11 +290,35 @@ if true then
 					surface.SetMaterial(image)
 					surface.DrawTexturedRect(w/2-imgw/2, 132/2-imgh/2, imgw, imgh)
 				elseif isstring(banner) then
+					-- Two-tone: if the banner starts with "MAX", draw that
+					-- part in the accent color (matches the MAX Scoreboard's
+					-- header) and the rest in the normal text color.
 					surface.SetFont("dev title")
-					local textw, texth = surface.GetTextSize(banner)
-					surface.SetTextColor(Color(230, 230, 230))
-					surface.SetTextPos(w/2-textw/2, 132/2-texth/2)
-					surface.DrawText(banner)
+
+					local highlight, rest = banner:match("^(MAX)(.*)$")
+
+					if highlight then
+						local highlightw = surface.GetTextSize(highlight)
+						local restw = surface.GetTextSize(rest)
+						local totalw = highlightw + restw
+						local texth = select(2, surface.GetTextSize(banner))
+
+						local x = w/2 - totalw/2
+						local y = 132/2 - texth/2
+
+						surface.SetTextColor(F4menu.configuration.general.color)
+						surface.SetTextPos(x, y)
+						surface.DrawText(highlight)
+
+						surface.SetTextColor(Color(230, 230, 230))
+						surface.SetTextPos(x + highlightw, y)
+						surface.DrawText(rest)
+					else
+						local textw, texth = surface.GetTextSize(banner)
+						surface.SetTextColor(Color(230, 230, 230))
+						surface.SetTextPos(w/2-textw/2, 132/2-texth/2)
+						surface.DrawText(banner)
+					end
 				end
 			end
 		end
@@ -366,119 +390,6 @@ if true then
 		tabs:SetPos(-tabs:GetWide(), 0)
 		tabs:MoveTo(0, 0, 0.3, 0, 4)
 		tabs.Items = {}
-
-		//
-		// Theme changer
-		//
-
-		local themer = vgui.Create("DButton", tabs)
-		themer:Dock(BOTTOM)
-		themer:SetTall(48)
-		themer:SetText("")
-		themer.text = "Theme"
-		local alpha = 50
-
-		function themer:Paint(w, h)
-			if self.Hovered then
-				alpha = math.Approach(alpha, 75, FrameTime()*300)
-			end
-
-			if self.Depressed or tabs.core.Selected == k then
-				alpha = math.Approach(alpha, 125, FrameTime()*750)
-			end
-
-			if not self.Hovered then
-				alpha = math.Approach(alpha, 50, FrameTime()*300)
-			end
-
-			surface.SetDrawColor(0, 0, 0, alpha)
-			surface.DrawRect(0, 0, w, h)
-				
-			//surface.SetDrawColor(color.r, color.g, color.b)
-			//surface.DrawRect(w-4, 0, 4, h)
-
-			surface.SetFont("dev button")
-			local textw, texth = surface.GetTextSize(self.text)
-			surface.SetTextColor(Color(185, 185, 185))
-			surface.SetTextPos(8, h/2-texth/2)
-			surface.DrawText(self.text)
-
-			surface.SetDrawColor(0, 0, 0, 100)
-			surface.DrawLine(0, h-1, w, h-1)
-		end
-
-		local selector = {}
-		for k, v in pairs(F4menu.configuration.general.themes) do
-			selector[k] = vgui.Create("DButton", tabs)
-
-			local pnl = selector[k]
-			pnl:Dock(BOTTOM)
-			pnl:SetTall(48)
-			pnl:SetText("")
-			pnl.text = k
-			pnl:SetVisible(false)
-			local alpha = 50
-
-			function pnl:Paint(w, h)
-				if self.Hovered then
-					F4menu.configuration.general.theme = k
-
-					alpha = math.Approach(alpha, 75, FrameTime()*300)
-				end
-
-				if self.Depressed or tabs.core.Selected == k then
-					alpha = math.Approach(alpha, 125, FrameTime()*750)
-				end
-
-				if not self.Hovered then
-					alpha = math.Approach(alpha, 50, FrameTime()*300)
-				end
-
-				surface.SetDrawColor(100, 100, 100, alpha)
-				surface.DrawRect(0, 0, w, h)
-					
-				//surface.SetDrawColor(color.r, color.g, color.b)
-				//surface.DrawRect(w-4, 0, 4, h)
-
-				surface.SetFont("dev button")
-				local textw, texth = surface.GetTextSize(self.text)
-				surface.SetTextColor(Color(185, 185, 185))
-				surface.SetTextPos(8, h/2-texth/2)
-				surface.DrawText(self.text)
-
-				surface.SetDrawColor(0, 0, 0, 100)
-				surface.DrawLine(0, h-1, w, h-1)
-			end
-
-			function pnl:DoClick()
-				if themer.Tall then
-					themer:SetTall(themer.Tall)
-					themer.Tall = nil
-				end
-
-				for k, v in pairs(selector) do
-					v:SetVisible(false)
-				end
-
-				F4menu.frame:SetMouseInputEnabled( false )
-				F4menu.frame:SetKeyboardInputEnabled( false )
-				F4menu.frame:Remove()
-				F4menu.frame = nil
-
-				F4menu.configuration.general.theme = k
-
-				F4menu.Open()
-			end	
-		end
-
-		function themer:DoClick()
-			self.Tall = self:GetTall()
-			self:SetTall(0)
-
-			for k, v in pairs(selector) do
-				v:SetVisible(true)
-			end
-		end
 
 		function tabs:Paint(w, h)
 			surface.SetDrawColor(theme().list_background or theme().job_background)
@@ -941,11 +852,26 @@ if true then
 							function chosen.model:LayoutEntity(ent)
 								chosen.model:SetFOV(45+(math.sin(RealTime())*3.5))
 
-								local sequence, duration = ent:LookupSequence("pose_standing_01")
-								if (sequence >= 0) and (duration != 0) then
-									ent:SetSequence(sequence)
-									chosen.model:RunAnimation()
+								-- Not every playermodel has a "pose_standing_01" sequence --
+								-- that alone silently failing was what left the T-pose showing.
+								-- Try a spread of common idle sequence names instead.
+								if not ent.MaxF4IdleSet then
+									local idleSequences = {"idle_unarmed", "idle_all_01", "idle_all", "idle", "walk_all", "walk_unarmed"}
+									local sequence = 0
+
+									for _, name in ipairs(idleSequences) do
+										local seq = ent:LookupSequence(name)
+										if seq and seq >= 0 then
+											sequence = seq
+											break
+										end
+									end
+
+									ent:ResetSequence(sequence)
+									ent.MaxF4IdleSet = true
 								end
+
+								chosen.model:RunAnimation()
 							end
 						end
 
