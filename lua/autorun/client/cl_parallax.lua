@@ -13,9 +13,11 @@ local function playTabSound()
 	surface.PlaySound("ui/hint.wav")
 end
 
--- Opening/selecting an item within a category: clicking a job to preview
--- it, or buying a weapon/shipment/vehicle/ammo/food item.
-local function playSelectSound()
+-- Expanding/collapsing a job/entity category (e.g. the "Citizen" job
+-- category, or a weapons/shipments/etc. sub-category) via its
+-- DCollapsibleCategory header. No sound on clicking individual items
+-- inside a category -- only opening/closing the category itself.
+local function playCategorySound()
 	surface.PlaySound("ui/freeze_cam.wav")
 end
 
@@ -652,6 +654,9 @@ if true then
 			    		category:DockMargin(8, 8, 8, 0)
 			    		category.Header:SetTall(48)
 			    		category:SetExpanded(v.startExpanded and 1 or 0)
+			    		function category:OnToggle(expanded)
+			    			playCategorySound()
+			    		end
 			    		category:SetLabel("")
 			    		category.Text = v.name
 						
@@ -764,7 +769,6 @@ if true then
 						    job.model:SetModel(model, 1, "000000000")
 
 						    function job:DoClick()
-						    	playSelectSound()
 
 						    	jobs:SetWide(p:GetWide()/4*3)
 
@@ -1098,6 +1102,9 @@ if true then
 			    		category:DockMargin(8, 8, 8, 0)
 			    		category.Header:SetTall(48)
 			    		category:SetExpanded(1)
+			    		function category:OnToggle(expanded)
+			    			playCategorySound()
+			    		end
 			    		category:SetLabel("")
 			    		category.Text = v.name
 
@@ -1226,7 +1233,6 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playSelectSound()
 						    	if v.cmd then
 						    		RunConsoleCommand("say", "/" .. v.cmd)
 						    	else
@@ -1294,6 +1300,9 @@ if true then
 			    		category:DockMargin(8, 8, 8, 0)
 			    		category.Header:SetTall(48)
 			    		category:SetExpanded(1)
+			    		function category:OnToggle(expanded)
+			    			playCategorySound()
+			    		end
 			    		category:SetLabel("")
 			    		category.Text = v.name
 
@@ -1407,7 +1416,6 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buy", v.name)
 						    end
 						end
@@ -1471,6 +1479,9 @@ if true then
 			    		category:DockMargin(8, 8, 8, 0)
 			    		category.Header:SetTall(48)
 			    		category:SetExpanded(1)
+			    		function category:OnToggle(expanded)
+			    			playCategorySound()
+			    		end
 			    		category:SetLabel("")
 			    		category.Text = v.name
 
@@ -1591,7 +1602,6 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buyshipment", v.name)
 						    end
 						end
@@ -1655,6 +1665,9 @@ if true then
 			    		category:DockMargin(8, 8, 8, 0)
 			    		category.Header:SetTall(48)
 			    		category:SetExpanded(1)
+			    		function category:OnToggle(expanded)
+			    			playCategorySound()
+			    		end
 			    		category:SetLabel("")
 			    		category.Text = v.name
 
@@ -1783,7 +1796,6 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buyvehicle", v.name)
 						    end
 						end
@@ -1845,6 +1857,9 @@ if true then
 			    		category:DockMargin(8, 8, 8, 0)
 			    		category.Header:SetTall(48)
 			    		category:SetExpanded(1)
+			    		function category:OnToggle(expanded)
+			    			playCategorySound()
+			    		end
 			    		category:SetLabel("")
 			    		category.Text = v.name
 
@@ -1965,7 +1980,6 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buyammo", v.id)
 						    end
 						end
@@ -2017,6 +2031,9 @@ if true then
 			    	category:DockMargin(8, 8, 8, 0)
 			    	category.Header:SetTall(48)
 			    	category:SetExpanded(1)
+			    	function category:OnToggle(expanded)
+			    		playCategorySound()
+			    	end
 			    	category:SetLabel("")
 			    	category.Text = "Foods"
 
@@ -2121,7 +2138,6 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buyfood", v.name)
 						    end
 						end
