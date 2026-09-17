@@ -2146,6 +2146,21 @@ if true then
 			end
 		end
 
+		-- Skills tab, provided by the separate levelsystem addon if it's
+		-- installed. Guarded so the F4 menu works fine without it too.
+		if F4menu.configuration.tabs.skills and F4menu.configuration.tabs.skills.enable and LevelSystem and LevelSystem.BuildSkillsTab then
+			tabs.Add("Skills", F4menu.configuration.tabs.skills.color, function(p)
+				local container = vgui.Create("DPanelList", p)
+				container:Dock(FILL)
+				container:DockMargin(16, 16, 16, 16)
+				container:InvalidateParent(true)
+				container:SetSpacing(8)
+				container:EnableVerticalScrollbar(true)
+
+				LevelSystem.BuildSkillsTab(container)
+			end)
+		end
+
 		local spacer = vgui.Create("DLabel", tabs)
 		spacer:Dock(TOP)
 		spacer:DockMargin(16, 0, 0, 0)

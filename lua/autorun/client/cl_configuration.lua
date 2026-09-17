@@ -103,6 +103,13 @@ F4menu.configuration.tabs = {
 		// Remove this to make everyone be able to see the food tab
 		allowed = {TEAM_COOK},
 	},
+
+	skills = {
+		enable = true,
+		color = Color(80, 200, 255),
+
+		// Only shows up if the separate levelsystem addon is installed.
+	},
 }
 
 F4menu.configuration.webtabs = {
