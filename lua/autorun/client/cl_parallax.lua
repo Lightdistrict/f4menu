@@ -2137,12 +2137,17 @@ if true then
 		end
 	end
 
-	hook.Add("PlayerBindPress", "F4menu", function(ply, bind, p)
-		if bind:find("gm_showspare2") then
-			F4menu.Open()
-		end
-	end)
 end
+
+-- This has to live outside F4menu.Open() -- registering it inside that
+-- function meant the bind listener only ever got armed the first time
+-- Open() ran, but nothing else ever called Open() to begin with, so
+-- pressing F4 did nothing at all (the hook was never created).
+hook.Add("PlayerBindPress", "F4menu", function(ply, bind, p)
+	if bind:find("gm_showspare2") then
+		F4menu.Open()
+	end
+end)
 
 hook.Add("OnPlayerChangedTeam", "Refresh Menu", function(p)
 	if p == LocalPlayer() then
