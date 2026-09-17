@@ -6,20 +6,22 @@ end
 
 -- Sound feedback. Swap these stock GMod sounds for anything else in the
 -- base game's sound/ folder.
-local function playOpenSound()
-	surface.PlaySound("buttons/button3.wav")
+
+-- Left sidebar category tabs (Jobs, Ents, Weapons, Shipments, Vehicles,
+-- Ammo, Food, and the webtabs like Discord/Steam Group/Donate).
+local function playTabSound()
+	surface.PlaySound("ui/hint.wav")
 end
 
-local function playCloseSound()
-	surface.PlaySound("buttons/button10.wav")
+-- Opening/selecting an item within a category: clicking a job to preview
+-- it, or buying a weapon/shipment/vehicle/ammo/food item.
+local function playSelectSound()
+	surface.PlaySound("ui/freeze_cam.wav")
 end
 
-local function playClickSound()
-	surface.PlaySound("buttons/button15.wav")
-end
-
-local function playBuySound()
-	surface.PlaySound("buttons/button9.wav")
+-- The "Become" button (applying for a job).
+local function playBecomeSound()
+	surface.PlaySound("ui/achievement_earned.wav")
 end
 
 PANEL = {}
@@ -252,7 +254,6 @@ if true then
 
 	function F4menu.Open()
 		F4menu.opened = CurTime()
-		playOpenSound()
 
 		if F4menu.frame then
 			F4menu.frame:SetVisible(true)
@@ -386,7 +387,6 @@ if true then
 		end
 
 		function close:DoClick()
-			playCloseSound()
 			F4menu.frame:SetAlpha(0)
 			F4menu.frame:SetVisible(false)
 		end
@@ -456,7 +456,7 @@ if true then
 			end
 
 			function button:DoClick()
-				playClickSound()
+				playTabSound()
 
 	            for _, v in pairs(tabs.core.Items) do
 	                if _ == k then
@@ -764,7 +764,7 @@ if true then
 						    job.model:SetModel(model, 1, "000000000")
 
 						    function job:DoClick()
-						    	playClickSound()
+						    	playSelectSound()
 
 						    	jobs:SetWide(p:GetWide()/4*3)
 
@@ -930,6 +930,8 @@ if true then
 						end
 
 						function chosen.become:DoClick()
+							playBecomeSound()
+
 							if v.vote or v.RequiresVote and v.RequiresVote(LocalPlayer(), v.team) then
 						        RunConsoleCommand("darkrp", "vote" .. v.command)
 						    else
@@ -1224,7 +1226,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playBuySound()
+						    	playSelectSound()
 						    	if v.cmd then
 						    		RunConsoleCommand("say", "/" .. v.cmd)
 						    	else
@@ -1405,7 +1407,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playBuySound()
+						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buy", v.name)
 						    end
 						end
@@ -1589,7 +1591,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playBuySound()
+						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buyshipment", v.name)
 						    end
 						end
@@ -1781,7 +1783,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playBuySound()
+						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buyvehicle", v.name)
 						    end
 						end
@@ -1963,7 +1965,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playBuySound()
+						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buyammo", v.id)
 						    end
 						end
@@ -2119,7 +2121,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
-						    	playBuySound()
+						    	playSelectSound()
 						    	RunConsoleCommand("DarkRP", "buyfood", v.name)
 						    end
 						end
