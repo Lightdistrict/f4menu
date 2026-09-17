@@ -4,6 +4,24 @@ local function theme()
 	return F4menu.configuration.general.themes[F4menu.configuration.general.theme]
 end
 
+-- Sound feedback. Swap these stock GMod sounds for anything else in the
+-- base game's sound/ folder.
+local function playOpenSound()
+	surface.PlaySound("buttons/button3.wav")
+end
+
+local function playCloseSound()
+	surface.PlaySound("buttons/button10.wav")
+end
+
+local function playClickSound()
+	surface.PlaySound("buttons/button15.wav")
+end
+
+local function playBuySound()
+	surface.PlaySound("buttons/button9.wav")
+end
+
 PANEL = {}
 
 function PANEL:Rebuild()
@@ -234,6 +252,7 @@ if true then
 
 	function F4menu.Open()
 		F4menu.opened = CurTime()
+		playOpenSound()
 
 		if F4menu.frame then
 			F4menu.frame:SetVisible(true)
@@ -367,6 +386,7 @@ if true then
 		end
 
 		function close:DoClick()
+			playCloseSound()
 			F4menu.frame:SetAlpha(0)
 			F4menu.frame:SetVisible(false)
 		end
@@ -436,6 +456,8 @@ if true then
 			end
 
 			function button:DoClick()
+				playClickSound()
+
 	            for _, v in pairs(tabs.core.Items) do
 	                if _ == k then
 	                    tabs.core:SetActiveTab(v.Tab)
@@ -443,7 +465,7 @@ if true then
 
 	                    --title.Text = text
 	                end
-	            end			
+	            end
 			end
 
 			local bg = vgui.Create("DPanelList", tabs.core)
@@ -742,6 +764,8 @@ if true then
 						    job.model:SetModel(model, 1, "000000000")
 
 						    function job:DoClick()
+						    	playClickSound()
+
 						    	jobs:SetWide(p:GetWide()/4*3)
 
 						    	F4menu.BuildChosen(v)
@@ -1200,6 +1224,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
+						    	playBuySound()
 						    	if v.cmd then
 						    		RunConsoleCommand("say", "/" .. v.cmd)
 						    	else
@@ -1380,6 +1405,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
+						    	playBuySound()
 						    	RunConsoleCommand("DarkRP", "buy", v.name)
 						    end
 						end
@@ -1563,6 +1589,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
+						    	playBuySound()
 						    	RunConsoleCommand("DarkRP", "buyshipment", v.name)
 						    end
 						end
@@ -1754,6 +1781,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
+						    	playBuySound()
 						    	RunConsoleCommand("DarkRP", "buyvehicle", v.name)
 						    end
 						end
@@ -1935,6 +1963,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
+						    	playBuySound()
 						    	RunConsoleCommand("DarkRP", "buyammo", v.id)
 						    end
 						end
@@ -2090,6 +2119,7 @@ if true then
 						    entity.model:SetModel(model, 1, "000000000")
 
 						    function entity:DoClick()
+						    	playBuySound()
 						    	RunConsoleCommand("DarkRP", "buyfood", v.name)
 						    end
 						end
